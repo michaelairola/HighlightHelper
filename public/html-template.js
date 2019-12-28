@@ -10,14 +10,6 @@ const convertVariable = v =>
 export const html = (strings, ...keys) =>
 	strings[0] + keys.map((key,i) => `${convertVariable(key)}${strings[i + 1]}`).join("");
 
-/* 
-	Simple object that can be planted into the html template. Mapping function works like Array map function, but takes (Key, value, index) as arguments instead of (key, index)
-	Array map definition: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
-	example: 
-		const hi = htmlObj({ greetings: "hello", planet: "world"})
-		const html = html``
-*/
-
 export class htmlObj extends Object {
 	constructor(obj) {
 		super();
