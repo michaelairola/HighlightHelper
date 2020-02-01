@@ -30,5 +30,5 @@ export const InitHelperStyles = {
 }
 
 export const helperTemplate = html`
-	<div>HI</div>
+	<div>Hello World!</div>
 `
