@@ -1,7 +1,7 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/highlight-helper/$BRANCH_NAME', '.']
+  args: ['build', '-t', 'gcr.io/highlighthelper/$BRANCH_NAME', '.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/highlight-helper/$BRANCH_NAME']
+  args: ['push', 'gcr.io/highlighthelper/$BRANCH_NAME']
 # - name: 'gcr.io/cloud-builders/gcloud'
 #   args: ['beta', 'run', 'deploy', 'resume', '--image', 'gcr.io/HighlightHelper/$BRANCH_NAME', '--region', 'us-central1', '--platform', 'managed', '--allow-unauthenticated']
