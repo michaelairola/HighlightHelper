@@ -15,6 +15,7 @@ const createHelperNode = () => {
 
 const addInternalCss = () => {
 	const qs = getScriptQueries();
+	console.log("qs:", qs)
 	let style = document.createElement("style");
 	style.innerHTML = HighlighHelperStyleSheet(Id)
 	document.head.appendChild(style)
@@ -102,7 +103,7 @@ const getQueryFromStr = (str, ...keys) =>
 	}, {})
 
 const getScriptQueries = () => {
-	const match = DEV_MODE ? "localhost" : "website name"
+	const match = DEV_MODE ? "localhost" : "highlighthelper.com"
 	const scripts = document.scripts;
 	for(let i = 0; i < scripts.length; i ++) {
 		const src = scripts[i].src;
