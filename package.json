@@ -2,22 +2,27 @@
   "name": "highlighthelper",
   "version": "1.0.0",
   "description": "If anyone reads this, please request an immediate merge k thanks",
-  "main": "script.js",
+  "main": "src/widget.js",
   "scripts": {
-    "start": "concurrently \"npm:*:dev\"",
+    "start": "concurrently --raw \"npm:*:dev\"",
     "serve": "node app.js",
     "serve:dev": "DEV_MODE=true PORT=3000 node app.js",
-    "build": "babel src -d dist",
-    "build:dev": "babel src -d dist -w"
+    "build": "rollup -c rollup.config.js",
+    "build:dev": "rollup -c rollup.config.js -w"
   },
   "author": "Mike Air",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
-    "mustache": "^3.2.0"
+    "express": "^4.17.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "concurrently": "^5.0.2"
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@rollup/plugin-node-resolve": "^6.0.0",
+    "concurrently": "^5.0.2",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-minify-html-literals": "^1.2.2",
+    "rollup-plugin-uglify": "^6.0.4"
   }
 }
