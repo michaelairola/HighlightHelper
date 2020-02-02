@@ -1,4 +1,4 @@
-import { helperTemplate, HighlighHelperStyleSheet, InitHelperStyles } from './helper-template.js'
+import { helperTemplate, HighlighHelperStyleSheet } from './helper-template.js'
 
 const Id = `highlight-helper-${`${Math.floor(Math.random()*(10**7))}`}`
 
