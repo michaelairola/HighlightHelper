@@ -1,8 +1,12 @@
 import { helperTemplate, HighlighHelperStyleSheet, InitHelperStyles } from './helper-template.js'
 
 const Id = `highlight-helper-${`${Math.floor(Math.random()*(10**7))}`}`
+
 let DEV_MODE = [ "localhost", "lvh.me" ].includes(window.location.hostname)
 let DEBUG = false; DEBUG = DEV_MODE ? DEBUG : false;
+
+const height = "100px";
+const width = "200px";
 
 const createHelperNode = () => {
 	let div = document.createElement("div");
@@ -10,12 +14,11 @@ const createHelperNode = () => {
 	const shadow = div.attachShadow({ mode: "closed" });
 	shadow.innerHTML = helperTemplate
 	document.body.appendChild(div)
-	setStyles(InitHelperStyles);
+	setStyles({ height, width });
 }
 
 const addInternalCss = () => {
 	const qs = getScriptQueries();
-	console.log("qs:", qs)
 	let style = document.createElement("style");
 	style.innerHTML = HighlighHelperStyleSheet(Id)
 	document.head.appendChild(style)
@@ -112,7 +115,6 @@ const getScriptQueries = () => {
 		}
 	}
 }
-
 
 export const createHelperDiv = () => {
 	createHelperNode();

@@ -20,15 +20,17 @@ export const HighlighHelperStyleSheet = Id => {
 	}`
 }
 
-export const InitHelperStyles = {
-	position: "absolute",
-	border: "solid 2px grey",
-	borderRadius: "5px",
-	width: "200px",
-	height: "100px",
-	background: "#bbb",
-}
-
+const HelperStyle = html`
+	<style>
+		:host {
+			position: absolute;
+			border: solid 2px grey;
+			border-radius: 5px;
+			background: #bbb;
+		}
+	</style>
+`
 export const helperTemplate = html`
+	${HelperStyle}
 	<div>Hello World!</div>
 `
