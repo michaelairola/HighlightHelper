@@ -1,42 +1,17 @@
-import { helperTemplate, HighlighHelperStyleSheet } from './helper-template.js'
+import { defineHelperElement } from './helper-template.js'
 
 const Id = `highlight-helper-${`${Math.floor(Math.random()*(10**7))}`}`
+let helperWidth = 200;
+let helperHeight = 100;
 
 let DEV_MODE = [ "localhost", "lvh.me" ].includes(window.location.hostname)
 let DEBUG = false; DEBUG = DEV_MODE ? DEBUG : false;
 
-const height = "100px";
-const width = "200px";
-
-const createHelperNode = () => {
-	let div = document.createElement("div");
-	div.id = Id;
-	const shadow = div.attachShadow({ mode: "closed" });
-	shadow.innerHTML = helperTemplate
-	document.body.appendChild(div)
-	setStyles({ height, width });
-}
-
-const addInternalCss = () => {
-	const qs = getScriptQueries();
-	let style = document.createElement("style");
-	style.innerHTML = HighlighHelperStyleSheet(Id)
-	document.head.appendChild(style)
-}
+export const defineHelper = () => defineHelperElement(Id);
 
 const getHelper = () => 
-	document.getElementById(Id)
+	document.querySelector(Id)
 
-const getStyle = key => getHelper().style[key];
-const getStyles = (...keys) => keys.reduce((values, key) => Object.assign(values, { [key]: getStyle(key) }), {})
-
-const setStyle = (key, value) => getHelper().style[key] = value;
-const setStyles = values => Object.keys(values).forEach(key => setStyle(key, values[key]));
-
-const addClass = c => getHelper().classList.add(c)
-const removeClass = c => getHelper().classList.remove(c)
-
-const setHelperPosition = (top, left) => setStyles({ top, left })
 const getSelectionPos = () => {try{
 	const { width, height, left, top, right, bottom } = document.getSelection().getRangeAt(0).getBoundingClientRect();
 	return { found: true, width, height, left, top, right, bottom };
@@ -58,8 +33,7 @@ const getAbsolutePosition = () => {try{
 	return { found: false };
 }}
 
-// establishing where the selection is, and where to put the highlight helper
-const setHelperToCorner = (key) => {
+const postionOfCorner = (key) => {
 	const map = { 
 		"bottom-right": [ 0, 0 ],
 		"bottom-center":[ 0, 1 ],
@@ -68,9 +42,7 @@ const setHelperToCorner = (key) => {
 		"top-center":   [ 1, 1 ],
 		"top-left":     [ 1, 2 ],
 	}
-	let helperStyles = getStyles("width", "height")
-	const helperWidth = Number(helperStyles.width.replace("px", ""))
-	const helperHeight = Number(helperStyles.height.replace("px", ""))
+
 	let { found, right, bottom, width, height } = getAbsolutePosition()
 	if(!found) return
 
@@ -80,52 +52,60 @@ const setHelperToCorner = (key) => {
 	left += long ? offSet : -1 * offSet; 
 	let top = bottom - lat * (helperHeight + height);
 	top += lat ? 0 : 10;
-	setHelperPosition(top, left)
+	return { top, left }
 }
 
-const setHelper = () => {
-	let helperStyles = getStyles("width", "height")
-	const helperWidth = Number(helperStyles.width.replace("px", ""));
-	const helperHeight = Number(helperStyles.height.replace("px", ""));
+const getPosition = () => {
 	const { right, width, height } = getAbsolutePosition();
 	const { top } = getSelectionPos();
 	const vertical = (0 <= top - helperHeight) ? "top" : "bottom";
 	const horizontal = 
 		(0 <= document.body.clientWidth - right - helperWidth) ? "right" : 
 		(50 <= document.body.clientWidth - width) ? "left" : "center";
-	setHelperToCorner(`${vertical}-${horizontal}`)
+	return postionOfCorner(`${vertical}-${horizontal}`)
 }
 
-const getQueryFromStr = (str, ...keys) => 
-	keys.reduce((queries, k) => {
-		const regex = new RegExp(`${k}=([^&]*)`)
-		const matches = str.match(regex);
-		const match = matches && matches.length > 1 ? decodeURI(matches[1]) : undefined
-		queries = { ...queries, [k]: match }
-		return queries
-	}, {})
+// const getQueryFromStr = (str, ...keys) => 
+// 	keys.reduce((queries, k) => {
+// 		const regex = new RegExp(`${k}=([^&]*)`)
+// 		const matches = str.match(regex);
+// 		const match = matches && matches.length > 1 ? decodeURI(matches[1]) : undefined
+// 		queries = { ...queries, [k]: match }
+// 		return queries
+// 	}, {})
 
-const getScriptQueries = () => {
-	const match = DEV_MODE ? "localhost" : "highlighthelper.com"
-	const scripts = document.scripts;
-	for(let i = 0; i < scripts.length; i ++) {
-		const src = scripts[i].src;
-		if(src && src.includes(match)) {
-			return getQueryFromStr(src, "email", "BackgroundColor", "hi")
-		}
+// const getScriptQueries = () => {
+// 	const match = DEV_MODE ? "localhost" : "highlighthelper.com"
+// 	const scripts = document.scripts;
+// 	for(let i = 0; i < scripts.length; i ++) {
+// 		const src = scripts[i].src;
+// 		if(src && src.includes(match)) {
+// 			return getQueryFromStr(src, "email", "BackgroundColor", "hi")
+// 		}
+// 	}
+// }
+
+const removeHelper = () => {
+	const helper = getHelper();
+	if(helper) {
+		helper.remove()
 	}
 }
+const showHelper = () => {
+	let helper = getHelper();
+	if(!helper) {
+		const helper = document.createElement(Id)
+		const { left, top } = getPosition();
+		helper.top = top;
+		helper.left = left;
+		document.body.appendChild(helper)
+	}
+}
+	
+export const isHelper = (element) => element.id == Id
 
-export const createHelperDiv = () => {
-	createHelperNode();
-	addInternalCss();
-}
-export const hideHelper = () => {
-	removeClass("show")
-	addClass("hide")
-}
-export const showHelper = () => {
-	setHelper();
-	removeClass("hide");
-	addClass("show");
+export const toggleHelper = () => {
+	removeHelper()
+	const text = window.getSelection().toString();
+	if(text) showHelper()
 }
