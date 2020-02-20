@@ -1,4 +1,4 @@
-import { defineHelper, toggleHelper } from './util.js';
+import { defineHelper, toggleHelper } from './render.js';
 
 const onLoad = () => {
 	defineHelper();	
