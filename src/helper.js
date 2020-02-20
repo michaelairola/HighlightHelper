@@ -1,6 +1,6 @@
 import { html } from "hybrids";
 
-const trans = `opacity .5s linear`
+const trans = `opacity .5s linear`;
 const HelperStyle = ({ left, top }) => html`
 	<style>
 		:host {
@@ -31,14 +31,12 @@ const HelperStyle = ({ left, top }) => html`
 			height: 70%;
 		}
 	</style>
-`
+`;
 
 export const HighlightHelper = {
 	left: 0,
 	top: 0,
-	style: {
-		get: host => HelperStyle(host)
-	},
+	style: host => HelperStyle(host), 
 	render:  ({ style }) => html`
 		${style}
 		<div>This uses Hybrid!!!</div>
