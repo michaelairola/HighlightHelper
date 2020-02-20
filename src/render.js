@@ -22,20 +22,17 @@ const getHelper = () =>
 const showHelper = () => {
 	let helper = getHelper();
 	if (!helper) helper = createHelper();
-	const { left, top } = getPosition();
-	helper.top = top;
-	helper.left = left;
-	window.setTimeout(() => helper.classList.add("show"),0)
+	helper.show = getPosition();
 }
-const removeHelper = () => {
+const hideHelper = () => {
 	let helper = getHelper();
 	if(!helper) helper = createHelper
-	helper.classList.remove("show")
+	helper.show = undefined;
 }
 	
 export const toggleHelper = ({ target }) => {
 	if (target.id == Id) return
-	removeHelper()
+	hideHelper()
 	const text = window.getSelection().toString();
 	if(text) showHelper()
 }

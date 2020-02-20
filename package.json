@@ -6,7 +6,7 @@
   "scripts": {
     "start": "concurrently --raw \"npm:*:dev\"",
     "serve": "node app.js",
-    "serve:dev": "DEV_MODE=true PORT=3000 node app.js",
+    "serve:dev": "DEV_MODE=true PORT=3001 node app.js",
     "build": "rollup -c rollup.config.js",
     "build:dev": "rollup -c rollup.config.js -w"
   },
