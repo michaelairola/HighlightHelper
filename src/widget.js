@@ -1,16 +1,14 @@
-import { defineHelper, toggleHelper, isHelper } from './util.js';
-
-const listenForHighlight = ({ target }) => !isHelper(target) ? toggleHelper() : undefined;
+import { defineHelper, toggleHelper } from './util.js';
 
 const onLoad = () => {
 	defineHelper();	
-	let lastOnMouseUp = document.onmouseup || function() {}
+	const lastOnMouseUp = document.onmouseup || function() {}
 	if(document.onmouseup){
 		console.warn("highlightHelper: document.onmouseup declared before this script is run.")
 	}
 	document.onmouseup = function(e) {
 		lastOnMouseUp(e);
-		listenForHighlight(e);
+		toggleHelper(e)
 	}
 }
 const lastOnLoad = window.onload || function() {}

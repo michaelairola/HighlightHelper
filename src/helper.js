@@ -1,4 +1,4 @@
-import { html } from './html-template';
+import { html } from "hybrids";
 
 const trans = `opacity .5s linear`
 const HelperStyle = ({ left, top }) => html`
@@ -32,29 +32,15 @@ const HelperStyle = ({ left, top }) => html`
 		}
 	</style>
 `
-export const defineHelperElement = Id => {
-	class HighlightHelper extends HTMLElement {
-		constructor() {
-			super();
-		}
-		Style() { 
-			return HelperStyle(this)
-		}
 
-		render() {
-			this.id = Id
-			const shadowRoot = this.attachShadow({ mode: "open" })
-			shadowRoot.innerHTML = html`
-			${this.Style()}
-			<div>Hello World!</div>
-		`}
-		connectedCallback() {
-			if(!this.rendered) {
-				this.render()
-				this.classList.add("show") 
-				this.rendered = true
-			}
-		}
-	}
-	window.customElements.define(Id, HighlightHelper)
+export const HighlightHelper = {
+	left: 0,
+	top: 0,
+	style: {
+		get: host => HelperStyle(host)
+	},
+	render:  ({ style }) => html`
+		${style}
+		<div>This uses Hybrid!!!</div>
+	`
 }
