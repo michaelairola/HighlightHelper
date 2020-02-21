@@ -11,17 +11,10 @@ const HelperStyles = {
 	background: "#bbb",
 }
 const hideStyles = {
-	top: 0, 
-	left: 0,
-	width: 0,
-	height: 0,
-	opacity: 0,
+	top: 0, left: 0, width: 0, height: 0, opacity: 0,
 }
 const showStyles = ({ left, top }) => ({
-	top, left,
-	width: 200,
-	height: 100,
-	opacity: 1,
+	top, left, opacity: 1,
 })
 const PageWrapperStyle = {
 	position: "relative",
@@ -39,8 +32,8 @@ export const HighlightHelper = {
 	show: {
 		set: ({ Style, AddTransition }, show) => {
 			AddTransition(":host", "opacity .5s linear")
-			Style(":host", showStyles(show));
 			AddTransition("#PageWrapper", "right .3s linear")
+			Style(":host", showStyles(show));
 			Style("#PageWrapper", PageWrapperStyle);
 			Style("[id|=Page]", PageStyle);
 		},
@@ -48,16 +41,28 @@ export const HighlightHelper = {
 	},
 	hide: {
 		get: (host) => () => {
-			host.RemoveTransition(":host", "opacity")
-			host.RemoveTransition("#PageWrapper", "right")
+			host.RemoveTransition(":host", "*")
+			host.RemoveTransition("#PageWrapper", "*")
 			host.Style(":host", hideStyles);
 			host.page = 0;
 		}
 	},
 	page: {
-		set: ({ Style, style }, page) => {
+		set: ({ Style, AddTransition, RemoveTransition }, page) => {
+			const styleMap = [
+				{ width: 200, height: 100 },
+				{ width: 300, height: 200 }
+			]
+			if(page) {
+				AddTransition(":host", "width .3s linear")
+				AddTransition(":host", "height .3s linear")
+			} 
+			Style(":host", styleMap[page])
 			Style("#PageWrapper", PageWrapperOffsett(page))
 		}
+	},
+	goToPage: {
+		get: host => page => () => host.page = page,
 	},
 	render: (host) => { 
 		return html`

@@ -1,7 +1,7 @@
 import { html } from "hybrids";
 
-export const emailPage = () => html`
-	<div>Another page!</div>
-	<button onclick="${host => host.page = 0}">Go back</button>
+export const emailPage = ({ goToPage }) => html`
+	<div>Another page! These transitions are super easy to work with! so fun :)</div>
+	<button onclick="${goToPage(0)}">Go back</button>
 `;
 

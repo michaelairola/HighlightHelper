@@ -13,17 +13,21 @@ const addTransition = (host, v) => {
 		} else {
 			tranArr = [ ...tranArr, v ];
 		}
-		transition = tranArr.join(",")
+		transition = tranArr.join(", ")
 	} else {
 		transition = v
 	}
 	connectStyle(host, { transition })
 }
 const removeTransition = (host, v) => {
+	if(v == "*") {
+		connectStyle(host, { transition: "" });
+		return;
+	}
 	const t = getType(v)
 	let transition = host.style["transition"];
 	if(!transition) return
-	transition = transition.split(",").filter(tran => getType(tran) != t)
+	transition = transition.split(", ").filter(tran => getType(tran) != t)
 	connectStyle(host, { transition })	
 }
 
