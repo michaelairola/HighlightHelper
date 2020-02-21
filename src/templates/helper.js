@@ -1,31 +1,9 @@
 import { html } from "hybrids";
-import { mainPage } from "./main.js";
-import { emailPage } from "./email.js";
 import { Style, AddTransition, RemoveTransition } from "../factories.js";
 
-const HelperStyles = {
-	position: "absolute",
-	overflow: "hidden",
-	border: "solid 2px grey",
-	borderRadius: "5px",
-	background: "#bbb",
-}
-const hideStyles = {
-	top: 0, left: 0, width: 0, height: 0, opacity: 0,
-}
-const showStyles = ({ left, top }) => ({
-	top, left, opacity: 1,
-})
-const PageWrapperStyle = {
-	position: "relative",
-	width: "200%",
-	right: 0,
-}
-const PageWrapperOffsett = (page) => ({ right: `${page * 100}%` })
-const PageStyle = {
-	width: "50%",
-	float: "left",
-}
+import { MainPage } from "./main.js";
+import { EmailPage } from "./email.js";
+import { HelperStyles, showStyles, hideStyles } from "./styles.js";
 
 export const HighlightHelper = {
 	Style, AddTransition, RemoveTransition,
@@ -34,10 +12,12 @@ export const HighlightHelper = {
 			AddTransition(":host", "opacity .5s linear")
 			AddTransition("#PageWrapper", "right .3s linear")
 			Style(":host", showStyles(show));
-			Style("#PageWrapper", PageWrapperStyle);
-			Style("[id|=Page]", PageStyle);
 		},
-		connect: ({ Style }) => Style(":host",{ ...HelperStyles, ...hideStyles })
+		connect: ({ Style }) => {
+			Style(":host",{ ...HelperStyles, ...hideStyles })
+			Style("#PageWrapper", { position: "relative", width: "200%", right: 0 });
+			Style("[id|=Page]", { width: "50%", float: "left" });
+		}
 	},
 	hide: {
 		get: (host) => () => {
@@ -47,30 +27,28 @@ export const HighlightHelper = {
 			host.page = 0;
 		}
 	},
+	Pages: { get: () => [ MainPage, EmailPage ] },
 	page: {
-		set: ({ Style, AddTransition, RemoveTransition }, page) => {
-			const styleMap = [
-				{ width: 200, height: 100 },
-				{ width: 300, height: 200 }
-			]
-			if(page) {
-				AddTransition(":host", "width .3s linear")
-				AddTransition(":host", "height .3s linear")
-			} 
-			Style(":host", styleMap[page])
-			Style("#PageWrapper", PageWrapperOffsett(page))
+		set: ({ Style, AddTransition, Pages }, index) => {
+			const Page = Pages[index];
+			if (!Page) return
+			const { hostStyle, transitions } = Page
+			if(transitions) transitions.forEach(t => AddTransition(":host", t))
+			if (hostStyle) Style(":host", hostStyle)
+			Style("#PageWrapper", { right: `${index * 100}%` })
 		}
 	},
 	goToPage: {
-		get: host => page => () => host.page = page,
+		get: host => n => () => {
+			const index = host.Pages.findIndex(({name}) => name == n)
+			if(index + 1) host.page = index
+			else console.log("Error page name", name," undefined.")
+		}
 	},
-	render: (host) => { 
-		return html`
+	render: (host) => html`
 		<div id="PageWrapper">
-			${[mainPage, emailPage].map(((fn,i) => html`
-				<div id="Page-${i}">${fn(host)}</div>
+			${host.Pages.map((({template},i) => html`
+				<div id="Page-${i}">${template(host)}</div>
 			`))}
-		</div>
-		`
-	}
+		</div>`
 }
