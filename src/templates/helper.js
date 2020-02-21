@@ -19,23 +19,38 @@ const hideStyles = {
 }
 const showStyles = ({ left, top }) => ({
 	transition: "opacity .5s linear",
-	top: `${top}px`,
-	left: `${left}px`,
-	width: "200px",
-	height: "100px",
+	top, left,
+	width: 200,
+	height: 100,
 	opacity: 1,
 })
-
+const PageWrapperStyle = {
+	position: "relative",
+	width: "200%",
+	right: 0,
+}
+const PageWrapperOffsett = (page) => ({
+	transition: page ? "right .3s linear" : "none",
+	right: page ? `${(page-1)*100}%` : 0,
+})
 const PageStyle = {
 	width: "50%",
 	float: "left",
 }
+const connectStyle = (host, v) => Object.keys(v).forEach(k => host.style[k] = v[k])
+
 export const HighlightHelper = {
-	Style: { set: (host, v) => Object.keys(v).forEach(k => host.style[k] = v[k]) },
-	page: 0,
+	Style: { set: connectStyle },
+	page: {
+		set: (host, page) => {
+			connectStyle(host.PageWrapper, PageWrapperOffsett(page))
+			return page
+		}
+	},
 	show: {
 		set: (host, show) => {
 			if (show) {
+				connectStyle(host.PageWrapper, PageWrapperStyle);
 				host.Style = showStyles(show);
 			} else {
 				host.Style = hideStyles;
@@ -44,16 +59,10 @@ export const HighlightHelper = {
 		},
 		connect: host => host.Style = { ...HelperStyles, ...hideStyles }
 	},
+	PageWrapper: ({ render }) => render().querySelector("#PageWrapper"),
 	
-	PageWrapperStyle: ({ page }) => ({
-		transition: "right .3s linear",
-		position: "relative",
-		width: "200%",
-		right: `${page*100}%`,
-	}),
-	
-	render: ({ PageWrapperStyle }) => html`
-	<div style="${PageWrapperStyle}">
+	render: () => html`
+	<div id="PageWrapper">
 		${[mainPage, emailPage].map((fn => html`
 			<div style="${PageStyle}">${fn()}</div>
 		`))}
