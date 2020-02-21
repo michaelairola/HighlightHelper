@@ -1,6 +1,7 @@
 import { html } from "hybrids";
 import { mainPage } from "./main.js";
 import { emailPage } from "./email.js";
+import { Style, ToggleTrans } from "../factories.js";
 
 const HelperStyles = {
 	position: "absolute",
@@ -10,7 +11,6 @@ const HelperStyles = {
 	background: "#bbb",
 }
 const hideStyles = {
-	transition: "none",
 	top: 0, 
 	left: 0,
 	width: 0,
@@ -18,7 +18,6 @@ const hideStyles = {
 	opacity: 0,
 }
 const showStyles = ({ left, top }) => ({
-	transition: "opacity .5s linear",
 	top, left,
 	width: 200,
 	height: 100,
@@ -29,40 +28,56 @@ const PageWrapperStyle = {
 	width: "200%",
 	right: 0,
 }
-const PageWrapperOffsett = (page) => ({
-	transition: page ? "right .3s linear" : "none",
-	right: page ? `${(page-1)*100}%` : 0,
-})
+const PageWrapperOffsett = (page) => ({ right: `${page * 100}%` })
 const PageStyle = {
 	width: "50%",
 	float: "left",
 }
 
 const connectStyle = (host, v) => Object.keys(v).forEach(k => host.style[k] = v[k])
+const toggleTransition = (host, v) => {
+	const t = v.split(" ")[0];
+	let transition;
+	if(!host["transition"]) {
+		transition = v;
+	} else {
+		const oldTrans = host["transition"].split(",");
+		const index = oldTrans.findIndex(tran => tran.includes(t))
+		if(index + 1) {
+			transition = oldTrans.filter((_,i) => index != i);
+		} else {
+			transition = [ ...oldTrans, v ].join(",");
+		}
+	}
+	return connectStyle(host, { transition })
+} 
 
 export const HighlightHelper = {
-	StyleHost: { get: host => v => connectStyle(host, v) },
-	StyleNode: { get: ({render}) => (key, v) => connectStyle(render().querySelector(key), v)},
+	Style, ToggleTrans,
 	show: {
-		set: (host, show) => {
-			const { StyleNode, StyleHost } = host;
-			if (show) {
-				StyleNode("#PageWrapper", PageWrapperStyle);
-				StyleHost(showStyles(show));
-			} else {
-				StyleHost(hideStyles);
-				host.page = 0
-			}
+		set: ({ Style, ToggleTrans }, show) => {
+			ToggleTrans(":host", "opacity .5s linear")
+			Style(":host", showStyles(show));
+			ToggleTrans("#PageWrapper", "right .3s linear")
+			Style("#PageWrapper", PageWrapperStyle);
+			Style("[id|=Page]", PageStyle);
 		},
-		connect: ({ StyleHost }) => StyleHost({ ...HelperStyles, ...hideStyles })
+		connect: ({ Style }) => Style(":host",{ ...HelperStyles, ...hideStyles })
+	},
+	hide: {
+		get: (host) => () => {
+			host.ToggleTrans("#PageWrapper", "right")
+			host.Style(":host", hideStyles);
+			host.page = 0;
+		} 
 	},
 	page: {
-		set: ({ StyleNode }, page) => StyleNode("#PageWrapper", PageWrapperOffsett(page))
+		set: ({ Style }, page) => Style("#PageWrapper", PageWrapperOffsett(page))
 	},
-	render: () => html`
+	render: (host) => html`
 	<div id="PageWrapper">
-		${[mainPage, emailPage].map((fn => html`
-			<div style="${PageStyle}">${fn()}</div>
+		${[mainPage, emailPage].map(((fn,i) => html`
+			<div id="Page-${i}">${fn(host)}</div>
 		`))}
 	</div>
 	`

@@ -23,17 +23,7 @@ const getHelper = () => {
 	return helper
 }
 const showHelper = () => getHelper().show = getPosition();
-const hideHelper = () => getHelper().show = undefined;
-// const showHelper = () => {
-// 	let helper = getHelper();
-// 	if (!helper) helper = createHelper();
-// 	helper.show = getPosition();
-// }
-// const hideHelper = () => {
-// 	let helper = getHelper();
-// 	if(!helper) helper = createHelper
-// 	helper.show = undefined;
-// }
+const hideHelper = () => getHelper().hide();
 	
 export const toggleHelper = ({ target }) => {
 	if (target.id == Id) return
