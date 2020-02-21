@@ -1,20 +1,33 @@
 
 const connectStyle = (host, v) => Object.keys(v).forEach(k => host.style[k] = v[k])
-const toggleTransition = (host, v) => {
-	const t = v.split(" ")[0];
-	let transition;
-	if(!host["transition"]) {
-		transition = v;
-	} else {
-		const oldTrans = host["transition"].split(",");
-		const index = oldTrans.findIndex(tran => tran.includes(t))
+
+const getType = v => v.split(" ")[0];
+const addTransition = (host, v) => {
+	const t = getType(v)
+	let transition = host.style["transition"]
+	if(transition) {
+		let tranArr = transition.split(",")
+		let index = tranArr.findIndex(tran => t == getType(tran))
 		if(index + 1) {
-			transition = oldTrans.filter((_,i) => index != i);
+			tranArr = tranArr.map((tran,i) => index == i ? v : tran)
 		} else {
-			transition = [ ...oldTrans, v ].join(",");
+			tranArr = [ ...tranArr, v ];
 		}
+		transition = tranArr.join(",")
+	} else {
+		transition = v
 	}
-	return connectStyle(host, { transition })
-} 
-export const Style = { get: host => (key, v) => key == ":host" ? connectStyle(host, v) : host.render().querySelectorAll(key).forEach(h => connectStyle(h, v))};
-export const ToggleTrans = { get: host => (key, v) => key == ":host" ? toggleTransition(host, v) : host.render().querySelectorAll(key).forEach(h => toggleTransition(h, v))};
+	connectStyle(host, { transition })
+}
+const removeTransition = (host, v) => {
+	const t = getType(v)
+	let transition = host.style["transition"];
+	if(!transition) return
+	transition = transition.split(",").filter(tran => getType(tran) != t)
+	connectStyle(host, { transition })	
+}
+
+const hostWrapper = fn => ({ get: host => (key, v) => key == ":host" ? fn(host, v) : host.render().querySelectorAll(key).forEach(h => fn(h,v))})
+export const Style = hostWrapper(connectStyle);
+export const AddTransition = hostWrapper(addTransition);
+export const RemoveTransition = hostWrapper(removeTransition);

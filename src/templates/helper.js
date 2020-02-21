@@ -1,7 +1,7 @@
 import { html } from "hybrids";
 import { mainPage } from "./main.js";
 import { emailPage } from "./email.js";
-import { Style, ToggleTrans } from "../factories.js";
+import { Style, AddTransition, RemoveTransition } from "../factories.js";
 
 const HelperStyles = {
 	position: "absolute",
@@ -34,31 +34,13 @@ const PageStyle = {
 	float: "left",
 }
 
-const connectStyle = (host, v) => Object.keys(v).forEach(k => host.style[k] = v[k])
-const toggleTransition = (host, v) => {
-	const t = v.split(" ")[0];
-	let transition;
-	if(!host["transition"]) {
-		transition = v;
-	} else {
-		const oldTrans = host["transition"].split(",");
-		const index = oldTrans.findIndex(tran => tran.includes(t))
-		if(index + 1) {
-			transition = oldTrans.filter((_,i) => index != i);
-		} else {
-			transition = [ ...oldTrans, v ].join(",");
-		}
-	}
-	return connectStyle(host, { transition })
-} 
-
 export const HighlightHelper = {
-	Style, ToggleTrans,
+	Style, AddTransition, RemoveTransition,
 	show: {
-		set: ({ Style, ToggleTrans }, show) => {
-			ToggleTrans(":host", "opacity .5s linear")
+		set: ({ Style, AddTransition }, show) => {
+			AddTransition(":host", "opacity .5s linear")
 			Style(":host", showStyles(show));
-			ToggleTrans("#PageWrapper", "right .3s linear")
+			AddTransition("#PageWrapper", "right .3s linear")
 			Style("#PageWrapper", PageWrapperStyle);
 			Style("[id|=Page]", PageStyle);
 		},
@@ -66,19 +48,24 @@ export const HighlightHelper = {
 	},
 	hide: {
 		get: (host) => () => {
-			host.ToggleTrans("#PageWrapper", "right")
+			host.RemoveTransition(":host", "opacity")
+			host.RemoveTransition("#PageWrapper", "right")
 			host.Style(":host", hideStyles);
 			host.page = 0;
-		} 
+		}
 	},
 	page: {
-		set: ({ Style }, page) => Style("#PageWrapper", PageWrapperOffsett(page))
+		set: ({ Style, style }, page) => {
+			Style("#PageWrapper", PageWrapperOffsett(page))
+		}
 	},
-	render: (host) => html`
-	<div id="PageWrapper">
-		${[mainPage, emailPage].map(((fn,i) => html`
-			<div id="Page-${i}">${fn(host)}</div>
-		`))}
-	</div>
-	`
+	render: (host) => { 
+		return html`
+		<div id="PageWrapper">
+			${[mainPage, emailPage].map(((fn,i) => html`
+				<div id="Page-${i}">${fn(host)}</div>
+			`))}
+		</div>
+		`
+	}
 }

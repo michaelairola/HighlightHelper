@@ -4,9 +4,6 @@ import { getPosition } from './position.js';
 
 const Id = `highlight-helper-${`${Math.floor(Math.random()*(10**7))}`}`
 
-let DEV_MODE = [ "localhost", "lvh.me" ].includes(window.location.hostname)
-let DEBUG = false; DEBUG = DEV_MODE ? DEBUG : false;
-
 export const defineHelper = () => {
 	define(Id, HighlightHelper)
 	createHelper()
