@@ -8,7 +8,7 @@
     "serve": "node app.js",
     "serve:dev": "DEV_MODE=true PORT=3001 node app.js",
     "build": "rollup -c rollup.config.js",
-    "build:dev": "rollup -c rollup.config.js -w"
+    "build:dev": "DEV_MODE=true rollup -c rollup.config.js -w"
   },
   "author": "Mike Air",
   "license": "ISC",
