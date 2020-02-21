@@ -37,30 +37,28 @@ const PageStyle = {
 	width: "50%",
 	float: "left",
 }
+
 const connectStyle = (host, v) => Object.keys(v).forEach(k => host.style[k] = v[k])
 
 export const HighlightHelper = {
-	Style: { set: connectStyle },
-	page: {
-		set: (host, page) => {
-			connectStyle(host.PageWrapper, PageWrapperOffsett(page))
-			return page
-		}
-	},
+	StyleHost: { get: host => v => connectStyle(host, v) },
+	StyleNode: { get: ({render}) => (key, v) => connectStyle(render().querySelector(key), v)},
 	show: {
 		set: (host, show) => {
+			const { StyleNode, StyleHost } = host;
 			if (show) {
-				connectStyle(host.PageWrapper, PageWrapperStyle);
-				host.Style = showStyles(show);
+				StyleNode("#PageWrapper", PageWrapperStyle);
+				StyleHost(showStyles(show));
 			} else {
-				host.Style = hideStyles;
+				StyleHost(hideStyles);
 				host.page = 0
 			}
 		},
-		connect: host => host.Style = { ...HelperStyles, ...hideStyles }
+		connect: ({ StyleHost }) => StyleHost({ ...HelperStyles, ...hideStyles })
 	},
-	PageWrapper: ({ render }) => render().querySelector("#PageWrapper"),
-	
+	page: {
+		set: ({ StyleNode }, page) => StyleNode("#PageWrapper", PageWrapperOffsett(page))
+	},
 	render: () => html`
 	<div id="PageWrapper">
 		${[mainPage, emailPage].map((fn => html`

@@ -17,18 +17,23 @@ const createHelper = () => {
 	document.body.appendChild(helper)
 	return helper
 }
-const getHelper = () => 
-	document.querySelector(Id)
-const showHelper = () => {
-	let helper = getHelper();
+const getHelper = () => {
+	let helper = document.querySelector(Id)
 	if (!helper) helper = createHelper();
-	helper.show = getPosition();
+	return helper
 }
-const hideHelper = () => {
-	let helper = getHelper();
-	if(!helper) helper = createHelper
-	helper.show = undefined;
-}
+const showHelper = () => getHelper().show = getPosition();
+const hideHelper = () => getHelper().show = undefined;
+// const showHelper = () => {
+// 	let helper = getHelper();
+// 	if (!helper) helper = createHelper();
+// 	helper.show = getPosition();
+// }
+// const hideHelper = () => {
+// 	let helper = getHelper();
+// 	if(!helper) helper = createHelper
+// 	helper.show = undefined;
+// }
 	
 export const toggleHelper = ({ target }) => {
 	if (target.id == Id) return
