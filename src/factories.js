@@ -35,7 +35,7 @@ const Style = hostWrapper(connectStyle);
 const AddTransition = hostWrapper(addTransition);
 const RemoveTransition = hostWrapper(removeTransition);
 
-export const styleProperty = (selector, key, init) => ({
+export const styleProperty = (selector, key, init ) => ({
 	set: (host, val) => {
 		if (typeof val == "object") {
 			const { value, transition } = val;
@@ -50,10 +50,8 @@ export const styleProperty = (selector, key, init) => ({
 		}
 	},
 	connect: host => {
-		if(init){
-			host[key] = init
-			Style(host, selector, { [key]: init })
-		}
+		host[key] = init
+		Style(host, selector, { [key]: init })
 	},
 })
 
