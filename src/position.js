@@ -22,7 +22,7 @@ const getAbsolutePosition = () => {try{
 	return { found: false };
 }}
 
-const postionOfCorner = (key) => {
+const postionOfCorner = (position) => {
 	const map = { 
 		"bottom-right": [ 0, 0 ],
 		"bottom-center":[ 0, 1 ],
@@ -35,13 +35,13 @@ const postionOfCorner = (key) => {
 	let { found, right, bottom, width, height } = getAbsolutePosition()
 	if(!found) return
 
-	const [ lat, long ] = map[key];
+	const [ lat, long ] = map[position];
 	let left = right - long * (helperWidth + width) / 2;
 	const offSet = long == 1 ? width/10 : width/5;
 	left += long ? offSet : -1 * offSet; 
 	let top = bottom - lat * (helperHeight + height);
 	top += lat ? 0 : 10;
-	return { top, left }
+	return { position, top, left }
 }
 
 export const getPosition = () => {

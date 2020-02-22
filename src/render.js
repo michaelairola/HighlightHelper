@@ -1,6 +1,5 @@
 import { define } from "hybrids"
 import { HighlightHelper } from "./templates/helper.js"
-import { getPosition } from './position.js';
 
 const Id = `highlight-helper-${`${Math.floor(Math.random()*(10**7))}`}`
 
@@ -19,7 +18,7 @@ const getHelper = () => {
 	if (!helper) helper = createHelper();
 	return helper
 }
-const showHelper = () => getHelper().show = getPosition();
+const showHelper = () => getHelper().show();
 const hideHelper = () => getHelper().hide();
 	
 export const toggleHelper = ({ target }) => {
