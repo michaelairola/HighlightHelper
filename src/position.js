@@ -1,6 +1,3 @@
-let helperWidth = 200;
-let helperHeight = 100;
-
 const getSelectionPos = () => {try{
 	const { width, height, left, top, right, bottom } = document.getSelection().getRangeAt(0).getBoundingClientRect();
 	return { found: true, width, height, left, top, right, bottom };
@@ -22,7 +19,7 @@ const getAbsolutePosition = () => {try{
 	return { found: false };
 }}
 
-const postionOfCorner = (position) => {
+const postionOfCorner = (position, { width: helperWidth, height: helperHeight }) => {
 	const map = { 
 		"bottom-right": [ 0, 0 ],
 		"bottom-center":[ 0, 1 ],
@@ -44,12 +41,12 @@ const postionOfCorner = (position) => {
 	return { position, top, left }
 }
 
-export const getPosition = () => {
+export const getPosition = (helper) => {
 	const { right, width, height } = getAbsolutePosition();
 	const { top } = getSelectionPos();
-	const vertical = (0 <= top - helperHeight) ? "top" : "bottom";
+	const vertical = (0 <= top - helper.height) ? "top" : "bottom";
 	const horizontal = 
-		(0 <= document.body.clientWidth - right - helperWidth) ? "right" : 
+		(0 <= document.body.clientWidth - right - helper.width) ? "right" : 
 		(50 <= document.body.clientWidth - width) ? "left" : "center";
-	return postionOfCorner(`${vertical}-${horizontal}`)
+	return postionOfCorner(`${vertical}-${horizontal}`, helper)
 }

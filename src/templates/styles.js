@@ -1,22 +1,15 @@
 
 
-export const HelperStyles = {
+export const initStyles = {
 	position: "absolute",
 	boxShadow: "0 30px 90px -20px rgba(0,0,0,.3), 0 0 1px 1px rgba(0,0,0,.5)",
 	fontSize: "14px",
 	lineHeight: "20px",
 	borderRadius: "2px",
 	background: "#fff",
-}
-export const hideStyles = {
-	top: 0, left: 0, opacity: 0,
-}
-export const showStyles = ({ left, top }) => ({
-	top, left, opacity: 1,
-})
-
-export const HelperBoxStyles = {
-	overflow: "hidden",
+	top: 0, 
+	left: 0, 
+	opacity: 0,
 }
 export const BoxTail = {
 	content: '',

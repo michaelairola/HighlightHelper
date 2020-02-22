@@ -31,6 +31,14 @@ const removeTransition = (host, v) => {
 	connectStyle(host, { transition })	
 }
 
+export const styleProperty = (selector, key) => ({
+	set: (host, val) => {
+		host.Style(selector, { [key]: val })
+		return val
+	}
+})
+
+
 const hostWrapper = fn => ({ get: host => (key, v) => key == ":host" ? fn(host, v) : host.render().querySelectorAll(key).forEach(h => fn(h,v))})
 export const Style = hostWrapper(connectStyle);
 export const AddTransition = hostWrapper(addTransition);
