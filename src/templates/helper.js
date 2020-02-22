@@ -23,7 +23,8 @@ export const HighlightHelper = {
 	height: styleProperty("#HelperBox", "height"),
 	show: {
 		get: host => () => {
-			const { Style, AddTransition, position: { left, top } } = host
+			const { Style, AddTransition, position } = host
+			const { left, top } = position()
 			AddTransition(":host", "opacity .5s linear")
 			AddTransition("#PageWrapper", "right .3s linear")
 			host.left = left;

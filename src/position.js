@@ -5,7 +5,7 @@ const getSelectionPos = () => {try{
 	return { found: false }
 }}
 
-export const getAbsolutePosition = () => {try{
+export const getAbsolutePosition = () => () => {try{
 	const boundingRect = getSelectionPos();
 	const { found, width, height } = boundingRect;
 	const baseRect = document.body.getBoundingClientRect();
@@ -19,16 +19,18 @@ export const getAbsolutePosition = () => {try{
 	return { found: false };
 }}
 
-export const getCorner = ({ height: helperHeight, width: helperWidth, AbsolutePosition: { right, width, height } }) => {
+export const getCorner = ({ height, width: helperWidth, AbsolutePosition }) => {
+	const { right, width } = AbsolutePosition();
 	const { top } = getSelectionPos();
-	const vertical = (0 <= top - helperHeight) ? "top" : "bottom";
+	const vertical = (0 <= top - height) ? "top" : "bottom";
 	const horizontal = 
 		(0 <= document.body.clientWidth - right - helperWidth) ? "right" : 
 		(50 <= document.body.clientWidth - width) ? "left" : "center";
 	return `${vertical}-${horizontal}`	
 }
 
-export const getPosition = ({ corner, width: helperWidth, height: helperHeight, AbsolutePosition: { found, right, bottom, width, height } }) => {
+export const getPosition = ({ corner, width: helperWidth, height: helperHeight, AbsolutePosition }) => () => {
+	const { found, right, bottom, width, height } = AbsolutePosition();
 	const map = { 
 		"bottom-right": [ 0, 0 ],
 		"bottom-center":[ 0, 1 ],
