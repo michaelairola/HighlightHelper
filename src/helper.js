@@ -1,23 +1,26 @@
 import { html } from "hybrids";
 import { 
-	initialize, styleProperty, changeProps, 
+	initialize, 
+	styleProperty, changeProps, 
 	getter, method 
 } from "./factories.js";
 import { getPosition } from './position.js';
 
+const goToPage = index => host => host.page = { value: `${index * 100}%`, transition: ".3s linear" }
 const MainPage = {
 	name: "main-page",
-	render: () => html`
+	props: { width: 200, height: 100 },
+	render: host => html`
 		<div>This uses Hybrid, and also is minified! so sweet!!!</div>
-		<button onclick="${host => host.page=1}">Change Page!</button>
+		<button onclick="${goToPage(1)}">Change Page!</button>
 	`,
 }
 const EmailPage = {
 	name: "email-page",
 	props: { width: 300, height: 200 },
-	render: () => html`
+	render: host => html`
 		<div>Another page! These transitions are super easy to work with! so fun :)</div>
-		<button onclick="${host => host.page=0}">Go back</button>
+		<button onclick="${goToPage(0)}">Go back</button>
 	`,
 }
 const Pages = [ MainPage, EmailPage ]
@@ -49,7 +52,7 @@ export const HighlightHelper = {
 	left: styleProperty(":host", "left", 0),
 	width: styleProperty("#HelperBox", "width", 0),
 	height: styleProperty("#HelperBox", "height", 0),
-	PageWrapper: styleProperty("#PageWrapper", "right", 0),
+	page: styleProperty("#PageWrapper", "right", 0),
 	
 	position: getter(getPosition),
 	show: method(host => () => {
@@ -57,8 +60,7 @@ export const HighlightHelper = {
 		const { left, top } = host.position
 		changeProps(host, { left, top, opacity: { value: 1, transition: ".5s linear" }})
 	}),
-	hide: method(host => () => changeProps(host, { opacity: 0, top: 0, left: 0, width: 0, height: 0, PageWrapper: 0 })),
-	page: { set: (host, index) => host.PageWrapper = { value: `${index * 100}%`, transition: ".3s linear" } },	
+	hide: method(host => () => changeProps(host, { opacity: 0, top: 0, left: 0, width: 0, height: 0, page: 0 })),
 	render: (host) => html`
 		<div id="HelperBox">
 			<div id="PageWrapper">

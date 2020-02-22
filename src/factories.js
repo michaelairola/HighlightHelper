@@ -49,7 +49,12 @@ export const styleProperty = (selector, key, init) => ({
 			return val
 		}
 	},
-	connect: init ? host => host[key] = init : undefined,
+	connect: host => {
+		if(init){
+			host[key] = init
+			Style(host, selector, { [key]: init })
+		}
+	},
 })
 
 export const initialize = (styles) => ({
