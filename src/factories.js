@@ -1,6 +1,5 @@
 
 const connectStyle = (host, v) => Object.keys(v).forEach(k => host.style[k] = v[k])
-
 const getType = v => v.split(" ")[0];
 const addTransition = (host, v) => {
 	const t = getType(v)
@@ -31,15 +30,33 @@ const removeTransition = (host, v) => {
 	connectStyle(host, { transition })	
 }
 
-export const styleProperty = (selector, key) => ({
+const hostWrapper = fn => (host, key, v) => key == ":host" ? fn(host, v) : host.render().querySelectorAll(key).forEach(h => fn(h,v))
+const Style = hostWrapper(connectStyle);
+const AddTransition = hostWrapper(addTransition);
+const RemoveTransition = hostWrapper(removeTransition);
+
+export const styleProperty = (selector, key, init) => ({
 	set: (host, val) => {
-		host.Style(selector, { [key]: val })
-		return val
-	}
+		if (typeof val == "object") {
+			const { value, transition } = val;
+			if(transition) AddTransition(host, selector, [ key, transition ].join(" "))
+			else RemoveTransition(host, selector, key)
+			if(value) Style(host, selector, { [key]: val.value });
+			return value;
+		} else {
+			RemoveTransition(host, selector, key)
+			Style(host, selector, { [key]: val })
+			return val
+		}
+	},
+	connect: init ? host => host[key] = init : undefined,
 })
 
-
-const hostWrapper = fn => ({ get: host => (key, v) => key == ":host" ? fn(host, v) : host.render().querySelectorAll(key).forEach(h => fn(h,v))})
-export const Style = hostWrapper(connectStyle);
-export const AddTransition = hostWrapper(addTransition);
-export const RemoveTransition = hostWrapper(removeTransition);
+export const initialize = (styles) => ({
+	init: {
+		connect: host => {
+			Object.keys(styles).forEach(k => Style(host, k, styles[k]))
+		},
+	}
+})
+export const method = fn => ({ get: fn });

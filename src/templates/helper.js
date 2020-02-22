@@ -1,68 +1,63 @@
 import { html } from "hybrids";
-import { Style, AddTransition, RemoveTransition, styleProperty } from "../factories.js";
+import { initialize, styleProperty, method } from "../factories.js";
 import { getCorner, getPosition, getAbsolutePosition } from '../position.js';
 import { MainPage } from "./main.js";
 import { EmailPage } from "./email.js";
 import { initStyles, BoxTail } from "./styles.js";
 
 export const HighlightHelper = {
-	Style, AddTransition, RemoveTransition,
-	connect: { connect: ({ Style }) => {
-			Style(":host", initStyles);
-			Style("#HelperBox", { overflow: "hidden" });
-			Style("#BoxTail", BoxTail);
-			Style("#PageWrapper", { position: "relative", width: "200%", right: 0 });
-			Style("[id|=Page]", { width: "50%", float: "left" });
-	} },
+	...initialize({
+		":host": initStyles,
+		"#HelperBox": { overflow: "hidden" },
+		"#BoxTail": BoxTail,
+		"#PageWrapper": { position: "relative", width: "200%", right: 0 },
+		"[id|=Page]": { width: "50%", float: "left" },
+	}),
+	opacity: styleProperty(":host", "opacity", 0),
+	top: styleProperty(":host", "top", 0),
+	left: styleProperty(":host", "left", 0),
+	width: styleProperty("#HelperBox", "width", 0),
+	height: styleProperty("#HelperBox", "height", 0),
+	PageWrapper: styleProperty("#PageWrapper", "right", 0),
+	
 	AbsolutePosition: { get: getAbsolutePosition },
 	corner: { get: getCorner },
 	position: { get: getPosition },
-	top: styleProperty(":host", "top"),
-	left: styleProperty(":host", "left"),
-	width: styleProperty("#HelperBox", "width"),
-	height: styleProperty("#HelperBox", "height"),
-	show: {
-		get: host => () => {
-			const { Style, AddTransition, position } = host
-			const { left, top } = position()
-			AddTransition(":host", "opacity .5s linear")
-			AddTransition("#PageWrapper", "right .3s linear")
-			host.left = left;
-			host.top = top;
-			Style(":host", { opacity: 1 });
-		},
-	},
-	hide: {
-		get: (host) => () => {
-			host.RemoveTransition(":host", "*")
-			host.RemoveTransition("#HelperBox", "*")
-			host.RemoveTransition("#PageWrapper", "*")
-			host.Style(":host", { opacity: 0 });
-			host.page = 0;
-		}
-	},
+	
+	show: method(host => () => {
+		const { position, page } = host
+		const { left, top } = position({ width: 200, height: 100 })
+		host.width = 200;
+		host.height = 100;
+		host.left = left;
+		host.top = top;
+		host.opacity = { value: 1, transition: ".5s linear"}
+	}),
+	hide: method((host) => () => {
+		host.opacity = 0;
+		host.width = 0;
+		host.height = 0;
+		host.left = 0;
+		host.top = 0;
+		host.PageWrapper = 0;
+	}),
 	Pages: { get: () => [ MainPage, EmailPage ] },
-	page: {
-		set: (host, index) => {
-			const { Style, AddTransition, Pages } = host;
+	goToPage: {
+		get: host => n => () => {
+			const index = host.Pages.findIndex(({name}) => name == n)			
+			if(!(index + 1)) {
+				console.log("Error page name", name," undefined.")
+				return
+			} 
+			const { Pages } = host;
 			const Page = Pages[index];
 			if (!Page) return
 			const { props, transitions } = Page
-			if(transitions) transitions.forEach(t => AddTransition("#HelperBox", t))
 			if (props) Object.keys(props).forEach(k => host[k] = props[k])
-			Style("#PageWrapper", { right: `${index * 100}%` })
+			host.PageWrapper = { value: `${index * 100}%`, transition: ".3s linear" };
 		}
 	},
-	goToPage: {
-		get: host => n => () => {
-			const { AddTransition } = host;
-			AddTransition("#HelperBox", "left .3s linear")
-			AddTransition("#HelperBox", "top .3s linear")
-			const index = host.Pages.findIndex(({name}) => name == n)
-			if(index + 1) host.page = index
-			else console.log("Error page name", name," undefined.")
-		}
-	},
+
 	render: (host) => html`
 		<div id="HelperBox">
 			<div id="PageWrapper">

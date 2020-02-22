@@ -29,7 +29,7 @@ export const getCorner = ({ height, width: helperWidth, AbsolutePosition }) => {
 	return `${vertical}-${horizontal}`	
 }
 
-export const getPosition = ({ corner, width: helperWidth, height: helperHeight, AbsolutePosition }) => () => {
+export const getPosition = ({ corner, AbsolutePosition }) => ({ width: helperWidth, height: helperHeight }) => {
 	const { found, right, bottom, width, height } = AbsolutePosition();
 	const map = { 
 		"bottom-right": [ 0, 0 ],

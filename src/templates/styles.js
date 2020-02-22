@@ -1,5 +1,3 @@
-
-
 export const initStyles = {
 	position: "absolute",
 	boxShadow: "0 30px 90px -20px rgba(0,0,0,.3), 0 0 1px 1px rgba(0,0,0,.5)",
@@ -7,9 +5,6 @@ export const initStyles = {
 	lineHeight: "20px",
 	borderRadius: "2px",
 	background: "#fff",
-	top: 0, 
-	left: 0, 
-	opacity: 0,
 }
 export const BoxTail = {
 	content: '',
