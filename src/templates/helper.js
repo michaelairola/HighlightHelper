@@ -1,6 +1,6 @@
 import { html } from "hybrids";
 import { Style, AddTransition, RemoveTransition, styleProperty } from "../factories.js";
-import { getPosition } from '../position.js';
+import { getCorner, getPosition, getAbsolutePosition } from '../position.js';
 import { MainPage } from "./main.js";
 import { EmailPage } from "./email.js";
 import { initStyles, BoxTail } from "./styles.js";
@@ -14,14 +14,16 @@ export const HighlightHelper = {
 			Style("#PageWrapper", { position: "relative", width: "200%", right: 0 });
 			Style("[id|=Page]", { width: "50%", float: "left" });
 	} },
+	AbsolutePosition: { get: getAbsolutePosition },
+	corner: { get: getCorner },
+	position: { get: getPosition },
 	top: styleProperty(":host", "top"),
 	left: styleProperty(":host", "left"),
 	width: styleProperty("#HelperBox", "width"),
 	height: styleProperty("#HelperBox", "height"),
 	show: {
 		get: host => () => {
-			const { Style, AddTransition } = host
-			const { position, left, top } = getPosition(host);
+			const { Style, AddTransition, position: { left, top } } = host
 			AddTransition(":host", "opacity .5s linear")
 			AddTransition("#PageWrapper", "right .3s linear")
 			host.left = left;

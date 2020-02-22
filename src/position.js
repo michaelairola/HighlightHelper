@@ -5,7 +5,7 @@ const getSelectionPos = () => {try{
 	return { found: false }
 }}
 
-const getAbsolutePosition = () => {try{
+export const getAbsolutePosition = () => {try{
 	const boundingRect = getSelectionPos();
 	const { found, width, height } = boundingRect;
 	const baseRect = document.body.getBoundingClientRect();
@@ -19,7 +19,16 @@ const getAbsolutePosition = () => {try{
 	return { found: false };
 }}
 
-const postionOfCorner = (position, { width: helperWidth, height: helperHeight }) => {
+export const getCorner = ({ height: helperHeight, width: helperWidth, AbsolutePosition: { right, width, height } }) => {
+	const { top } = getSelectionPos();
+	const vertical = (0 <= top - helperHeight) ? "top" : "bottom";
+	const horizontal = 
+		(0 <= document.body.clientWidth - right - helperWidth) ? "right" : 
+		(50 <= document.body.clientWidth - width) ? "left" : "center";
+	return `${vertical}-${horizontal}`	
+}
+
+export const getPosition = ({ corner, width: helperWidth, height: helperHeight, AbsolutePosition: { found, right, bottom, width, height } }) => {
 	const map = { 
 		"bottom-right": [ 0, 0 ],
 		"bottom-center":[ 0, 1 ],
@@ -29,24 +38,12 @@ const postionOfCorner = (position, { width: helperWidth, height: helperHeight })
 		"top-left":     [ 1, 2 ],
 	}
 
-	let { found, right, bottom, width, height } = getAbsolutePosition()
 	if(!found) return
-
-	const [ lat, long ] = map[position];
+	const [ lat, long ] = map[corner];
 	let left = right - long * (helperWidth + width) / 2;
 	const offSet = long == 1 ? width/10 : width/5;
 	left += long ? offSet : -1 * offSet; 
 	let top = bottom - lat * (helperHeight + height);
 	top += lat ? 0 : 10;
-	return { position, top, left }
-}
-
-export const getPosition = (helper) => {
-	const { right, width, height } = getAbsolutePosition();
-	const { top } = getSelectionPos();
-	const vertical = (0 <= top - helper.height) ? "top" : "bottom";
-	const horizontal = 
-		(0 <= document.body.clientWidth - right - helper.width) ? "right" : 
-		(50 <= document.body.clientWidth - width) ? "left" : "center";
-	return postionOfCorner(`${vertical}-${horizontal}`, helper)
+	return { top, left }
 }
