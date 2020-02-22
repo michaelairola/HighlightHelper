@@ -59,4 +59,6 @@ export const initialize = (styles) => ({
 		},
 	}
 })
-export const method = fn => ({ get: fn });
+export const getter = x => ({ get: x });
+export const method = getter;
+export const changeProps = (host, props) => Object.keys(props).forEach(k => host[k] = props[k])

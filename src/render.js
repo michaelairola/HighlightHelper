@@ -1,5 +1,5 @@
 import { define } from "hybrids"
-import { HighlightHelper } from "./templates/helper.js"
+import { HighlightHelper } from "./helper.js"
 
 const Id = `highlight-helper-${`${Math.floor(Math.random()*(10**7))}`}`
 
