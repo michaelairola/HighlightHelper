@@ -35,14 +35,13 @@ export const HighlightHelper = {
 	},
 	Pages: { get: () => [ MainPage, EmailPage ] },
 	page: {
-		set: ({ Style, AddTransition, Pages, show }, index) => {
+		set: ({ Style, AddTransition, Pages }, index) => {
 			const Page = Pages[index];
 			if (!Page) return
 			const { hostStyle, transitions } = Page
 			if(transitions) transitions.forEach(t => AddTransition("#HelperBox", t))
 			if (hostStyle) Style("#HelperBox", hostStyle)
 			Style("#PageWrapper", { right: `${index * 100}%` })
-			show();
 		}
 	},
 	goToPage: {
