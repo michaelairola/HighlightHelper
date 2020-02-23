@@ -1,5 +1,5 @@
-
 const connectStyle = (host, v) => Object.keys(v).forEach(k => host.style[k] = v[k])
+
 const getType = v => v.split(" ")[0];
 const addTransition = (host, v) => {
 	const t = getType(v)
@@ -16,7 +16,7 @@ const addTransition = (host, v) => {
 	} else {
 		transition = v
 	}
-	connectStyle(host, { transition })
+	connectStyle(host, { transition, WebkitTransition: transition })
 }
 const removeTransition = (host, v) => {
 	if(v == "*") {
@@ -27,7 +27,7 @@ const removeTransition = (host, v) => {
 	let transition = host.style["transition"];
 	if(!transition) return
 	transition = transition.split(", ").filter(tran => getType(tran) != t)
-	connectStyle(host, { transition })	
+	connectStyle(host, { transition, WebkitTransition: transition })	
 }
 
 const hostWrapper = fn => (host, key, v) => key == ":host" ? fn(host, v) : host.render().querySelectorAll(key).forEach(h => fn(h,v))
@@ -56,12 +56,10 @@ export const styleProperty = (selector, key, init ) => ({
 })
 
 export const initialize = (styles) => ({
-	init: {
-		connect: host => {
-			Object.keys(styles).forEach(k => Style(host, k, styles[k]))
-		},
-	}
+	connect: host => {
+		Object.keys(styles).forEach(k => Style(host, k, styles[k]))
+	},
 })
 export const getter = x => ({ get: x });
 export const method = getter;
-export const changeProps = (host, props) => Object.keys(props).forEach(k => host[k] = props[k])
+export const changeProps = (host, props, transition) => Object.keys(props).forEach(k => host[k] = transition ? { value: props[k], transition } : props[k])
