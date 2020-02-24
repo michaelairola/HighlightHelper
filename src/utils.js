@@ -34,21 +34,23 @@ const hostWrapper = fn => (host, key, v) => key == ":host" ? fn(host, v) : host.
 const Style = hostWrapper(connectStyle);
 const AddTransition = hostWrapper(addTransition);
 const RemoveTransition = hostWrapper(removeTransition);
+ 
+export const setStyle = (host, selector, key, val) => {
+	if (typeof val == "object") {
+		const { value, transition } = val;
+		if(transition) AddTransition(host, selector, [ key, transition ].join(" "))
+		else RemoveTransition(host, selector, key)
+		if(value) Style(host, selector, { [key]: val.value });
+		return value;
+	} else {
+		RemoveTransition(host, selector, key)
+		Style(host, selector, { [key]: val })
+		return val
+	}
+}
 
 export const styleProperty = (selector, key, init ) => ({
-	set: (host, val) => {
-		if (typeof val == "object") {
-			const { value, transition } = val;
-			if(transition) AddTransition(host, selector, [ key, transition ].join(" "))
-			else RemoveTransition(host, selector, key)
-			if(value) Style(host, selector, { [key]: val.value });
-			return value;
-		} else {
-			RemoveTransition(host, selector, key)
-			Style(host, selector, { [key]: val })
-			return val
-		}
-	},
+	set: (host, val) => setStyle(host, selector, key, val),
 	connect: host => {
 		host[key] = init
 		Style(host, selector, { [key]: init })
@@ -61,5 +63,5 @@ export const initialize = (styles) => ({
 	},
 })
 export const getter = x => ({ get: x });
-export const method = getter;
+export const method = fn => (host) => (...args) => fn(host, ...args);
 export const changeProps = (host, props, transition) => Object.keys(props).forEach(k => host[k] = transition ? { value: props[k], transition } : props[k])

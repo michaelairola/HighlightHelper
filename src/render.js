@@ -18,7 +18,7 @@ const getHelper = () => {
 	if (!helper) helper = createHelper();
 	return helper
 }
-const showHelper = (text) => getHelper().show(text)
+const showHelper = (text) => getHelper().show(text);
 const hideHelper = () => getHelper().hide();
 	
 export const toggleHelper = ({ target }) => {

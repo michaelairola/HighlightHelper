@@ -1,18 +1,30 @@
 import { html, property } from "hybrids";
 import { 
-	initialize, 
+	initialize, setStyle,
 	styleProperty, changeProps, 
 	getter, method 
 } from "./utils.js";
 import { getPosition } from './position.js';
-
+import { BoxTailStyles } from './styles.js';
 const goToPage = index => host => {
 	const transition = ".3s linear";
 	const props = Pages[index];
+	const { corner: oldCorner } = host.position;	
 	changeProps(host, { ...props, page: `${index * 100}%` }, transition);
-	const { left, top } = host.position;
-	changeProps(host, {left, top}, transition);
+	const { corner, left, top } = host.position;
+	changeProps(host, { [`BoxTail-${oldCorner}`]: 0 })
+	changeProps(host, {left, top, [`BoxTail-${corner}`]: 1 }, transition);
 }
+
+const createTailStyleProps = () => {
+	let x = {};
+	["bottom", "top"].forEach(i => ["right", "left"].forEach(j => {
+		x[`BoxTail-${i}-${j}`] = styleProperty(`[id|=BoxTail-${i}-${j}]`, "opacity", 0)
+	}))
+	return x
+}
+const TailStyleProps = createTailStyleProps();
+
 const Pages = [ { width: 200, height: 100 }, { width: 300, height: 200 } ]
 export const HighlightHelper = {
 	init: initialize({
@@ -21,6 +33,7 @@ export const HighlightHelper = {
 			boxShadow: "0 30px 90px -20px rgba(0,0,0,.3), 0 0 1px 1px rgba(0,0,0,.5)",
 			fontSize: "14px",
 			lineHeight: "20px",
+			border: "solid 1px black",
 			borderRadius: "2px",
 			background: "#fff",
 			
@@ -29,49 +42,51 @@ export const HighlightHelper = {
 			MozUserSelect: "none",
 		},
 		"#HelperBox": { overflow: "hidden" },
-		"#BoxTail": {
-			content: '',
-			position: "absolute",
-			border: "10px solid transparent",
-			borderBottom: 0,
-			borderTop: "11px solid #fff",
-			bottom: "-7px",
-			left: "7px",
-		},
 		"#PageWrapper": { position: "relative", width: "200%", right: 0 },
-		"[id|=Page]": { width: "50%", float: "left" },
+		".page": { margin: "5px 15px 0px 15px" },
+		"button": { marginTop: "5px" },
+		"[id|=Page]": { width: "50%", float: "left", paddingTop:"10px", paddingBottom: "10px" },
+		...BoxTailStyles,
 	}),
 	text: "",
-	text: property(""),
 	opacity: styleProperty(":host", "opacity", 0),
 	top: styleProperty(":host", "top", 0),
 	left: styleProperty(":host", "left", 0),
 	width: styleProperty("#HelperBox", "width", 0),
 	height: styleProperty("#HelperBox", "height", 0),
 	page: styleProperty("#PageWrapper", "right", 0),
-
+	
+	...TailStyleProps,
 	position: getPosition,
-	show: (host) => (text) => {
+	show: method((host, text) => {
 			// host.text = text
 			changeProps(host, { width: 200, height: 100 })
-			const { left, top } = host.position
-			changeProps(host, { left, top, opacity: { value: 1, transition: ".5s linear" }})
-	},
-	hide: method(host => () => changeProps(host, { opacity: 0, top: 0, left: 0, width: 0, height: 0, page: 0 })),
-	render: ({ text }) => {
+			const { corner, left, top } = host.position;
+			console.log('corner:', corner)
+			changeProps(host, { left, top, })
+			changeProps(host, { [`BoxTail-${corner}`]: 1, opacity: 1 }, ".5s linear" )
+	}),
+	hide: method(host => changeProps(host, { opacity: 0, top: 0, left: 0, width: 0, height: 0, page: 0, ...Object.keys(TailStyleProps).reduce((acc, v)=>({ ...acc, [v]: 0 }),{}) })),
+	render: ({ text, corner }) => {
 		return html`
 		<div id="HelperBox">
 			<div id="PageWrapper">
 				<div id="Page-1">
-					<div>This uses Hybrid, and also is minified! so sweet!!!</div>
+					<div class="page">This is a popup widget!</div>
 					<button onclick="${goToPage(1)}">Change Page!</button>
 				</div>
 				<div id="Page-2">
-					<div>Another page! These transitions are super easy to work with! so fun :)</div>
-					<button onclick="${goToPage(0)}">Go back</button>
-					<h1><q>${text}</q></h1></div>
+					<div class="page">Another page! Ideally, the selected text will go here. Currently waiting on a PR issued to be accepted at <a href="https://github.com/hybridsjs/hybrids">Hybrid</a>...</div>
+						<button onclick="${goToPage(0)}">Go back</button>
+						<h1><q>${text}</q></h1>
+					</div>
 				</div>
 			</div>
-		<span id="BoxTail"></span>
+			${["bottom", "top"].map(i => html`
+				${["right", "left"].map(j => html`
+					<span id="BoxTail-${i}-${j}-border"></span>
+					<span id="BoxTail-${i}-${j}"></span>
+			`)}`)}
+		</div>		
 	`}
 }

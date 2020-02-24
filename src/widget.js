@@ -8,7 +8,7 @@ const onLoad = () => {
 	}
 	document.onmouseup = function(e) {
 		lastOnMouseUp(e);
-		toggleHelper(e)
+		toggleHelper(e);
 	}
 }
 const lastOnLoad = window.onload || function() {}
