@@ -47,6 +47,7 @@ export const getPosition = (host) => {
 	const offSet = long == 1 ? width/10 : width/5;
 	left += long ? offSet : -1 * offSet; 
 	let top = bottom - lat * (helperHeight + height);
-	top += lat ? 0 : 10;
+	top += lat ? 0 : 20;
+	top -= lat ? 5 : 0;
 	return { corner: corner.replace("center", "right"), top, left }
 }
