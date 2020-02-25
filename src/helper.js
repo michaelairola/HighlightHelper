@@ -5,7 +5,7 @@ import {
 	getter, method 
 } from "./utils.js";
 import { getPosition } from './position.js';
-import { BoxTailStyles } from './styles.js';
+import { Styles } from './styles.js';
 const goToPage = index => host => {
 	const transition = ".3s linear";
 	const props = Pages[index];
@@ -27,27 +27,6 @@ const TailStyleProps = createTailStyleProps();
 
 const Pages = [ { width: 200, height: 100 }, { width: 300, height: 200 } ]
 export const HighlightHelper = {
-	init: initialize({
-		":host": {
-			position: "absolute",
-			boxShadow: "0 30px 90px -20px rgba(0,0,0,.3), 0 0 1px 1px rgba(0,0,0,.5)",
-			fontSize: "14px",
-			lineHeight: "20px",
-			border: "solid 1px black",
-			borderRadius: "2px",
-			background: "#fff",
-			
-			userSelect: "none",
-			WebkitUserSelect: "none",
-			MozUserSelect: "none",
-		},
-		"#HelperBox": { overflow: "hidden" },
-		"#PageWrapper": { position: "relative", width: "200%", right: 0 },
-		".page": { margin: "5px 15px 0px 15px" },
-		"button": { marginTop: "5px" },
-		"[id|=Page]": { width: "50%", float: "left", paddingTop:"10px", paddingBottom: "10px" },
-		...BoxTailStyles,
-	}),
 	text: "",
 	opacity: styleProperty(":host", "opacity", 0),
 	top: styleProperty(":host", "top", 0),
@@ -69,6 +48,7 @@ export const HighlightHelper = {
 	hide: method(host => changeProps(host, { opacity: 0, top: 0, left: 0, width: 0, height: 0, page: 0, ...Object.keys(TailStyleProps).reduce((acc, v)=>({ ...acc, [v]: 0 }),{}) })),
 	render: ({ text, corner }) => {
 		return html`
+		${Styles}
 		<div id="HelperBox">
 			<div id="PageWrapper">
 				<div id="Page-1">
