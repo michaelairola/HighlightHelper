@@ -2,7 +2,7 @@ import { html } from "hybrids";
 
 export const Styles = html`
 <style>
-	:host {
+	#HelperBox {
 		position: absolute;
 		boxShadow: 0 30px 90px -20px rgba(0,0,0,.3), 0 0 1px 1px rgba(0,0,0,.5);
 		fontSize: 14px;
@@ -15,7 +15,7 @@ export const Styles = html`
 		webkit-user-select: none;
 		moz-user-select: none;
 	}
-	#HelperBox { 
+	.No-Overflow {
 		overflow: hidden;
 	}
 	#PageWrapper { 
@@ -35,76 +35,60 @@ export const Styles = html`
 		padding-top:10px;
 		padding-bottom: 10px;
 	}
-	#BoxTail-top-right {
+	[id|=BoxTail] {
 		content: '';
 		position: absolute;
 		border: 10px solid transparent;
+	}
+	[id|=BoxTail-top-right] {
 		border-bottom: 0;
-		border-top: 11px solid #fff;
-		bottom: -10px;
+		border-top: 11px solid;
 		left: 7px;
 	}
-	#BoxTail-top-right-border {
-		content: '';
-		position: absolute;
-		border: 10px solid transparent;
+	[id|=BoxTail-top-left] {
+		border-top: 11px solid;
 		border-bottom: 0;
-		border-top: 11px solid black;
-		bottom: -12px;
-		left: 7px;
+		left: 85%;
+	}
+	[id|=BoxTail-bottom-left] {
+		border-top: 0;
+		border-bottom: 11px solid;
+		left: 85%;
+	}
+	[id|=BoxTail-bottom-right] {
+		border-top: 0;
+		border-bottom: 11px solid;
+		left: 5%;
+	}
+	[id$=border] {
+		border-top-color: black;
+	}
+	#BoxTail-top-right {
+		border-top-color: #fff;
+		bottom: -10px;
 	}
 	#BoxTail-top-left {
-		content: '';
-		position: absolute;
-		border: 10px solid transparent;
-		border-bottom: 0;
-		border-top: 11px solid #fff;
+		border-top-color: #fff;
 		bottom: -10px;
-		left: 85%;
-	}
-	#BoxTail-top-left-border {
-		content: '';
-		position: absolute;
-		border: 10px solid transparent;
-		border-bottom: 0;
-		border-top: 11px solid black;
-		bottom: -12px;
-		left: 85%;
 	}
 	#BoxTail-bottom-left {
-		content: '';
-		position: absolute;
-		border: 10px solid transparent;
-		border-top: 0;
-		border-bottom: 11px solid #fff;
+		border-bottom-color: #fff;
 		top: -10px;
-		left: 85%;
-	}
-	#BoxTail-bottom-left-border {
-		content: '';
-		position: absolute;
-		border: 10px solid transparent;
-		border-top: 0;
-		border-bottom: 11px solid black;
-		top: -12px;
-		left: 85%;
 	}
 	#BoxTail-bottom-right {
-		content: '';
-		position: absolute;
-		border: 10px solid transparent;
-		border-top: 0;
-		border-bottom: 11px solid #fff;
+		border-bottom-color: #fff;
 		top: -10px;
-		left: 5%;
+	}
+	#BoxTail-top-right-border {
+		bottom: -12px;
+	}
+	#BoxTail-top-left-border {
+		bottom: -12px;
+	}
+	#BoxTail-bottom-left-border {
+		top: -12px;
 	}
 	#BoxTail-bottom-right-border {
-		content: '';
-		position: absolute;
-		border: 10px solid transparent;
-		border-top: 0;
-		border-bottom: 11px solid black;
 		top: -12px;
-		left: 5%;
 	}
 </style>`
