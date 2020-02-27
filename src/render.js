@@ -18,12 +18,15 @@ const getHelper = () => {
 	if (!helper) helper = createHelper();
 	return helper
 }
-const showHelper = (text) => getHelper().show(text);
-const hideHelper = () => getHelper().hide();
+// const showHelper = (text) => getHelper().show(text);
+// const hideHelper = () => getHelper().hide();
 	
 export const toggleHelper = ({ target }) => {
 	if (target.id == Id) return
-	hideHelper()
+	const helper = getHelper();
+	helper.text = "";
+	// hideHelper()
 	const text = window.getSelection().toString();
-	if(text) showHelper(text)
+	helper.text = text;
+	// if(text) showHelper(text)
 }

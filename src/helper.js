@@ -45,28 +45,35 @@ export const HighlightHelper = {
 
 	...TailStyleProps,
 	position: getPosition,
-	show: method((host, text) => {
-			host.width =  200;
-			host.height = 100;
-			const { corner, left, top } = host.position;
-			host.left = left;
-			host.top = top
-			host[`BoxTail-${corner}`] = 1;
-			host.HelperBoxTransition = "opacity .5s linear"
-			host.opacity = 1;
-	}),
-	hide: method(host => {
-		changeProps(host, { opacity: 0, top: 0, left: 0, width: 0, height: 0, page: 0 })
-		host.HelperBoxTransition = "";
-		host.PageWrapperTransition = "";
-		Object.keys(TailStyleProps).forEach(k => {
-			if (k.includes('transition')) {
-				host[k] = "";
+	text: {
+		get: (_, v) => v,
+		set: (host, text) => {
+			if(text) {
+				// show helper
+				host.width =  200;
+				host.height = 100;
+				const { corner, left, top } = host.position;
+				host.left = left;
+				host.top = top
+				host[`BoxTail-${corner}`] = 1;
+				host.HelperBoxTransition = "opacity .5s linear"
+				host.opacity = 1;
 			} else {
-				host[k] = 0;
+				// hide helper
+				changeProps(host, { opacity: 0, top: 0, left: 0, width: 0, height: 0, page: 0 })
+				host.HelperBoxTransition = "";
+				host.PageWrapperTransition = "";
+				Object.keys(TailStyleProps).forEach(k => {
+					if (k.includes('transition')) {
+						host[k] = "";
+					} else {
+						host[k] = 0;
+					}
+				})
 			}
-		})
-	}),
+			return text
+		}
+	},
 	render: (host) => {
 		const { 
 			top, left, width, height, opacity, page, 
@@ -83,7 +90,7 @@ export const HighlightHelper = {
 						<button onclick="${goToPage(1)}">Change Page!</button>
 					</div>
 					<div id="Page-2">
-						<div class="page">Another page! Ideally, the selected text will go here. Currently waiting on a PR issued to be accepted at <a href="https://github.com/hybridsjs/hybrids">Hybrid</a>...</div>
+						<div class="page">Another page! Select text should go here. Brought to you by <a href="https://github.com/hybridsjs/hybrids">Hybrid</a></div>
 						<button onclick="${goToPage(0)}">Go back</button>
 						<h1><q>${text}</q></h1>
 					</div>
