@@ -1,5 +1,6 @@
 import { define } from "hybrids"
 import { HighlightHelper } from "./helper.js"
+// import { Options } from "./utils.js";
 
 const Id = `highlight-helper-${`${Math.floor(Math.random()*(10**7))}`}`
 
@@ -23,5 +24,6 @@ export const toggleHelper = ({ target }) => {
 	if (target.id == Id) return
 	const helper = getHelper();
 	helper.text = "";
-	requestAnimationFrame(() => helper.text = window.getSelection().toString())
+	const text = window.getSelection().toString()
+	requestAnimationFrame(() => helper.text = text)
 }

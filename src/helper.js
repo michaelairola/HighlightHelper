@@ -14,6 +14,11 @@ const goToPage = page => host => {
 }
 const Pages = [ { width: 200, height: 100 }, { width: 300, height: 200 } ]
 export const HighlightHelper = {
+	// options
+	setOptions: { set: (host, opts) => changeProps(host, opts) },
+	debug: false,
+
+	// properties of the component
 	text: "",
 	opacity: 0,
 	top: 0,
