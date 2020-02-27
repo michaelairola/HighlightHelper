@@ -16,6 +16,7 @@ export const Styles = html`
 		moz-user-select: none;
 	}
 	.No-Overflow {
+		height: 100%;
 		overflow: hidden;
 	}
 	#PageWrapper { 
@@ -80,15 +81,15 @@ export const Styles = html`
 		top: -10px;
 	}
 	#BoxTail-top-right-border {
-		bottom: -12px;
+		bottom: -11px;
 	}
 	#BoxTail-top-left-border {
-		bottom: -12px;
+		bottom: -11px;
 	}
 	#BoxTail-bottom-left-border {
-		top: -12px;
+		top: -11px;
 	}
 	#BoxTail-bottom-right-border {
-		top: -12px;
+		top: -11px;
 	}
 </style>`

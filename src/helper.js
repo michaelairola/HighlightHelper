@@ -1,8 +1,5 @@
 import { html, property } from "hybrids";
-import { 
-    changeProps, 
-    method 
-} from "./utils.js";
+import { changeProps } from "./utils.js";
 import { getPosition } from './position.js';
 import { Styles } from './styles.js';
 const goToPage = page => host => {
@@ -13,23 +10,8 @@ const goToPage = page => host => {
 	const PageWrapperTransition = `right ${transition}`;
 	changeProps(host, { ...props, page, HelperBoxTransition, PageWrapperTransition });
 	const { corner, left, top } = host.position;
-	changeProps(host, { left, top })
-	host[`BoxTail-${oldCorner}-transition`] = ""
-	host[`BoxTail-${oldCorner}`] = 0
-	host[`BoxTail-${corner}-transition`] = "opacity .3s linear"
-	host[`BoxTail-${corner}`] = 1
+	changeProps(host, { left, top, corner })
 }
-
-const createTailStyleProps = () => {
-	let x = {};
-	["bottom", "top"].forEach(i => ["right", "left"].forEach(j => {
-		x[`BoxTail-${i}-${j}`] = 0
-		x[`BoxTail-${i}-${j}-transition`] = "";
-	}))
-	return x
-}
-const TailStyleProps = createTailStyleProps();
-
 const Pages = [ { width: 200, height: 100 }, { width: 300, height: 200 } ]
 export const HighlightHelper = {
 	text: "",
@@ -39,36 +21,27 @@ export const HighlightHelper = {
 	width: 0,
 	height: 0,
 	page: 0,
+	corner: "top-right",
 	
 	HelperBoxTransition: "",
 	PageWrapperTransition: "",
 
-	...TailStyleProps,
 	position: getPosition,
 	text: {
 		get: (_, v) => v,
 		set: (host, text) => {
 			if(text) {
 				// show helper
-				host.width =  200;
-				host.height = 100;
+				const props = Pages[0]
+				changeProps(host, props)
+				const opacity = 1;
 				const { corner, left, top } = host.position;
-				host.left = left;
-				host.top = top
-				host[`BoxTail-${corner}`] = 1;
-				host.HelperBoxTransition = "opacity .5s linear"
-				host.opacity = 1;
+				changeProps(host, { opacity, left, top, corner, HelperBoxTransition: `opacity .5s linear` })
 			} else {
 				// hide helper
-				changeProps(host, { opacity: 0, top: 0, left: 0, width: 0, height: 0, page: 0 })
-				host.HelperBoxTransition = "";
-				host.PageWrapperTransition = "";
-				Object.keys(TailStyleProps).forEach(k => {
-					if (k.includes('transition')) {
-						host[k] = "";
-					} else {
-						host[k] = 0;
-					}
+				changeProps(host, { 
+					opacity: 0, top: 0, left: 0, width: 0, height: 0, page: 0,
+					HelperBoxTransition: "", PageWrapperTransition: "", 
 				})
 			}
 			return text
@@ -78,7 +51,7 @@ export const HighlightHelper = {
 		const { 
 			top, left, width, height, opacity, page, 
 			HelperBoxTransition, PageWrapperTransition, 
-			text
+			text, corner,
 		} = host;
 		return html`
 		${Styles}
@@ -96,13 +69,8 @@ export const HighlightHelper = {
 					</div>
 				</div>
 			</div>
-			${["bottom", "top"].map(i => html`
-				${["right", "left"].map(j => {
-					const key = `BoxTail-${i}-${j}`
-					return html`
-						<span id="${key}-border" style="${{ opacity: host[key], transition: host[`${key}-transition`] }}"></span>
-						<span id="${key}" style="${{ opacity: host[key], transition: host[`${key}-transition`] }}"></span>
-			`})}`)}
+			<span id="BoxTail-${corner}-border"></span>
+			<span id="BoxTail-${corner}"></span>
 		</div>		
 	`}
 }
