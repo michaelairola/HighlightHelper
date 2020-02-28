@@ -11,8 +11,9 @@ const onLoad = () => {
 		toggleHelper(e);
 	}
 }
-const lastOnLoad = window.onload || function() {}
-window.onload = (e) => {
-	lastOnLoad(e)
-	onLoad(e)
-}
+onLoad()
+// const lastOnLoad = window.onload || function() {}
+// window.onload = (e) => {
+// 	lastOnLoad(e)
+// 	onLoad(e)
+// }

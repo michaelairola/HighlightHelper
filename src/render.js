@@ -1,29 +1,39 @@
 import { define } from "hybrids"
 import { HighlightHelper } from "./helper.js"
-// import { Options } from "./utils.js";
+import { Options } from "./utils.js";
+import { positionDebugger } from "./position.js"
 
-const Id = `highlight-helper-${`${Math.floor(Math.random()*(10**7))}`}`
+const { debug } = Options;
+const TIMESTAMP = Date.now();
+const Id = `highlight-helper-${TIMESTAMP}`
+const DebugId = `highlight-helper-debugger-${TIMESTAMP}`
+
 
 export const defineHelper = () => {
 	define(Id, HighlightHelper)
-	createHelper()
+	if(debug) define(DebugId, positionDebugger)
 }
-const createHelper = () => {
-	const helper = document.createElement(Id)
-	helper.id = Id
-	document.body.appendChild(helper)
-	return helper
+
+const createElement = (name) => {
+	let el = document.querySelector(name)
+	if (!el){
+		el = document.createElement(name)
+		el.id = name
+		document.body.appendChild(el)
+	} 
+	return el
 }
-const getHelper = () => {
-	let helper = document.querySelector(Id)
-	if (!helper) helper = createHelper();
-	return helper
-}
-	
+const getHelper = () => createElement(Id)
+const getDebugger = () => createElement(DebugId)
+
 export const toggleHelper = ({ target }) => {
 	if (target.id == Id) return
 	const helper = getHelper();
 	helper.text = "";
 	const text = window.getSelection().toString()
-	requestAnimationFrame(() => helper.text = text)
+	if(debug) getDebugger().show = false;
+	requestAnimationFrame(() => {
+		helper.text = text
+		if(debug) getDebugger().show = true;
+	})
 }

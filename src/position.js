@@ -1,3 +1,4 @@
+import { html } from "hybrids"
 const getSelectionPos = () => {try{
 	const { width, height, left, top, right, bottom } = document.getSelection().getRangeAt(0).getBoundingClientRect();
 	return { found: true, width, height, left, top, right, bottom };
@@ -8,10 +9,9 @@ const getSelectionPos = () => {try{
 const getAbsolutePosition = () => {try{
 	const boundingRect = getSelectionPos();
 	const { found, width, height } = boundingRect;
-	const baseRect = document.body.getBoundingClientRect();
-	const left = boundingRect.left - baseRect.left;
+	const left = boundingRect.left + window.pageXOffset
 	const right = left + width;
-	const top = boundingRect.top - baseRect.top;
+	const top = boundingRect.top + window.pageYOffset
 	const bottom = top + height;
 	return { found, left, top, width, height, right, bottom, };
 } catch(e) {
@@ -51,3 +51,23 @@ export const getPosition = (host) => {
 	top -= lat ? 5 : 0;
 	return { corner: corner.replace("center", "right"), top, left }
 }
+
+export const positionDebugger = {
+	show: false,
+	render: ({ show, }) => {
+		const { width, height, top, left } = getAbsolutePosition();
+		return show ? html`
+			<style>
+				:host {
+					position: absolute;
+					width: ${width}px;
+					height: ${height}px;
+					top: ${top/*+95*/}px;
+					left: ${left}px;
+					border: 3px solid blue;
+					z-index: 100;
+				}
+			</style>` : html``
+	},
+}
+

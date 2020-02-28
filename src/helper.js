@@ -2,6 +2,7 @@ import { html, property } from "hybrids";
 import { changeProps } from "./utils.js";
 import { getPosition } from './position.js';
 import { Styles } from './styles.js';
+
 const goToPage = page => host => {
 	const { corner: oldCorner } = host.position;
 	const transition = ".3s linear";
