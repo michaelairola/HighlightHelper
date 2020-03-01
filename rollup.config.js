@@ -12,11 +12,11 @@ const config = () => {
 		resolve(), 
 		babel({ presets: [ "@babel/preset-env" ] }) 
 	]
-	// plugins = DevMode ? plugins : [
-	// 	minifyHTML(),
-	// 	...plugins,
-	// 	uglify(),
-	// ]
+	plugins = DevMode ? plugins : [
+		minifyHTML(),
+		...plugins,
+		uglify(),
+	]
 	return { input, output, plugins }
 };
 
