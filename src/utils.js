@@ -8,7 +8,7 @@ const defaultOptions = {
 
 const getOptions = () => {
 	const queryStr = "\\?(.*)?"
-	const regex = ["localhost", "lvh.me"].includes(window.location.hostname) ? new RegExp(`${window.location.hostname}:3001/widget.js${queryStr}`) : new regex(`highlighthelper.com/widget.js${queryStr}`)
+	const regex = ["localhost", "lvh.me"].includes(window.location.hostname) ? new RegExp(`${window.location.hostname}:3001/widget.js${queryStr}`) : new RegExp(`highlighthelper.com/widget.js${queryStr}`)
 	for(let i = 0; i < document.scripts.length; i++) {
 		const { src } = document.scripts.item(i)
 		const match = src.match(regex)
