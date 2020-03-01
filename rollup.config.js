@@ -13,9 +13,9 @@ const config = () => {
 		babel({ presets: [ "@babel/preset-env" ] }) 
 	]
 	plugins = DevMode ? plugins : [ 
-		minifyHTML(),
+		// minifyHTML(),
 		...plugins,
-		uglify(),
+		// uglify(),
 	]
 	return { input, output, plugins }
 };
