@@ -4,8 +4,9 @@ export const Styles = html`
 <style>
 	#HelperBox {
 		position: absolute;
-		boxShadow: 0 30px 90px -20px rgba(0,0,0,.3), 0 0 1px 1px rgba(0,0,0,.5);
-		fontSize: 14px;
+		z-index: 2147483647;
+		box-shadow: 0 30px 90px -20px rgba(0,0,0,.3), 0 0 1px 1px rgba(0,0,0,.5);
+		font-size: 14px;
 		line-height: 20px;
 		border: solid 1px black;
 		border-radius: 2px;
@@ -81,15 +82,15 @@ export const Styles = html`
 		top: -10px;
 	}
 	#BoxTail-top-right-border {
-		bottom: -11px;
+		bottom: -12px;
 	}
 	#BoxTail-top-left-border {
-		bottom: -11px;
+		bottom: -12px;
 	}
 	#BoxTail-bottom-left-border {
-		top: -11px;
+		top: -12px;
 	}
 	#BoxTail-bottom-right-border {
-		top: -11px;
+		top: -12px;
 	}
 </style>`

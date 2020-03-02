@@ -13,6 +13,8 @@ const goToPage = page => host => {
 	const { corner, left, top } = host.position;
 	changeProps(host, { left, top, corner })
 }
+const pixels = v => `${v}px`
+
 const Pages = [ { width: 200, height: 100 }, { width: 300, height: 200 } ]
 export const HighlightHelper = {
 	// options
@@ -61,7 +63,7 @@ export const HighlightHelper = {
 		} = host;
 		return html`
 		${Styles}
-		<div id="HelperBox" style="${{ top, left, width, height, opacity, transition: HelperBoxTransition }}">
+		<div id="HelperBox" style="${{ top: pixels(top), left: pixels(left), width: pixels(width), height: pixels(height), opacity, transition: HelperBoxTransition }}">
 			<div class="No-Overflow">
 				<div id="PageWrapper" style="${{ right: `${page * 100}%`, transition: PageWrapperTransition }}">
 					<div id="Page-1">
