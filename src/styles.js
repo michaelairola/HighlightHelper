@@ -32,7 +32,6 @@ export const Styles = html`
 		margin-top: 5px;
 	}
 	[id|=Page] { 
-		width: 50%;
 		float: left;
 		padding-top:10px;
 		padding-bottom: 10px;
