@@ -1,6 +1,6 @@
 import { defineHelper, toggleHelper } from './render.js';
 
-const onLoad = () => {
+(function() {
 	defineHelper();	
 	const lastOnMouseUp = document.onmouseup || function() {}
 	if(document.onmouseup){
@@ -10,10 +10,4 @@ const onLoad = () => {
 		lastOnMouseUp(e);
 		toggleHelper(e);
 	}
-}
-onLoad()
-// const lastOnLoad = window.onload || function() {}
-// window.onload = (e) => {
-// 	lastOnLoad(e)
-// 	onLoad(e)
-// }
+})()
